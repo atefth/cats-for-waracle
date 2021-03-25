@@ -19,10 +19,11 @@ export default function NewCat(props) {
         cancelButtonText={"cancel"}
         submitButtonText={"submit"}
         maxFileSize={5000000}
+        filesLimit={1}
         open={open}
         onClose={() => setOpen(false)}
         onSave={(files) => {
-          dispatch(uploadCat(files[0]));
+          dispatch(uploadCat({ file: files[0] }));
           setOpen(false);
         }}
         showPreviews={true}

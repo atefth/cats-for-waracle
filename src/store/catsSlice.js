@@ -69,16 +69,19 @@ export const unfavourite = createAsyncThunk(
   }
 );
 
-export const uploadCat = createAsyncThunk("cats/createCat", async (file) => {
-  const response = await axios.post(
-    `${endpoint}/images/upload`,
-    { file, sub_id: subId },
-    config
-  );
-  const data = await response.data;
+export const uploadCat = createAsyncThunk(
+  "cats/createCat",
+  async ({ file }) => {
+    const response = await axios.post(
+      `${endpoint}/images/upload`,
+      { file, sub_id: subId },
+      config
+    );
+    const data = await response.data;
 
-  return data;
-});
+    return data;
+  }
+);
 
 const catsSlice = createSlice({
   name: "cats",
