@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function App({ children }) {
+export default function App() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -163,12 +163,11 @@ export default function App({ children }) {
         })}
       >
         <div className={classes.drawerHeader} />
-        {{ ...children }}
+        <Router>
+          <ListCats path="/" />
+          <NewCat path="/upload" />
+        </Router>
       </main>
-      <Router>
-        <ListCats path="/" />
-        <NewCat path="/upload" />
-      </Router>
     </div>
   );
 }
