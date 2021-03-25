@@ -1,27 +1,37 @@
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import {MenuOutlined, ChevronLeftOutlined, ChevronRightOutlined, PetsOutlined, AddCircleOutlineOutlined} from '@material-ui/icons';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { useState } from "react";
+import clsx from "clsx";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import {
+  Drawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
+import {
+  MenuOutlined,
+  ChevronLeftOutlined,
+  ChevronRightOutlined,
+  PetsOutlined,
+  AddCircleOutlineOutlined,
+} from "@material-ui/icons";
+import { Router, Link } from "@reach/router";
+import { ListCats, NewCat } from "../cats/";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: "flex",
   },
   appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -29,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -38,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   hide: {
-    display: 'none',
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
@@ -48,24 +58,24 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -73,10 +83,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function App({children}) {
+export default function App({ children }) {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -121,22 +131,30 @@ export default function App({children}) {
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftOutlined /> : <ChevronRightOutlined />}
+            {theme.direction === "ltr" ? (
+              <ChevronLeftOutlined />
+            ) : (
+              <ChevronRightOutlined />
+            )}
           </IconButton>
         </div>
         <Divider />
         <List>
-            <ListItem button>
-              <ListItemIcon><PetsOutlined/></ListItemIcon>
-              <ListItemText primary="My cats" />
-            </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <PetsOutlined />
+            </ListItemIcon>
+            <ListItemText primary={<Link to="/">My cats</Link>} />
+          </ListItem>
         </List>
         <Divider />
         <List>
-            <ListItem button>
-              <ListItemIcon><AddCircleOutlineOutlined/></ListItemIcon>
-              <ListItemText primary="New Cat?!" />
-            </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <AddCircleOutlineOutlined />
+            </ListItemIcon>
+            <ListItemText primary={<Link to="/upload">New Cat?!</Link>} />
+          </ListItem>
         </List>
       </Drawer>
       <main
@@ -145,8 +163,12 @@ export default function App({children}) {
         })}
       >
         <div className={classes.drawerHeader} />
-		{{...children}}
+        {{ ...children }}
       </main>
+      <Router>
+        <ListCats path="/" />
+        <NewCat path="/upload" />
+      </Router>
     </div>
   );
 }
