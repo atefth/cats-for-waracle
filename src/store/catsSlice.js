@@ -13,8 +13,7 @@ const limit = 20;
 
 export const getCats = createAsyncThunk("cats/fetchCats", async () => {
   const response = await axios.get(
-    `${endpoint}/images/search?limit=${limit}`,
-    // `${endpoint}/images/search?sub_id=${subId}&limit=${limit}`,
+    `${endpoint}/images?sub_id=${subId}&limit=${limit}`,
     config
   );
   const data = await response.data;
@@ -24,8 +23,7 @@ export const getCats = createAsyncThunk("cats/fetchCats", async () => {
 
 export const getVotes = createAsyncThunk("cats/fetchVotes", async () => {
   const response = await axios.get(
-    `${endpoint}/votes?limit=${limit}`,
-    // `${endpoint}/votes?sub_id=${subId}&limit=${limit}`,
+    `${endpoint}/votes?sub_id=${subId}&limit=${limit}`,
     config
   );
   const data = await response.data;
