@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { getCats, getVotes } from "../../store/catsSlice";
+import {
+  getCats,
+  getVotes,
+  vote,
+  favourite,
+  unfavourite,
+} from "../../store/catsSlice";
 import {
   Container,
   Grid,
@@ -52,7 +58,7 @@ export default function ListCats(props) {
   return (
     <Container maxWidth="xl">
       <Grid container spacing={3} className={classes.root}>
-        {cats.map(({ id, url, favourite, votes }) => {
+        {cats.map(({ id, url, favouriteId, votes }) => {
           return (
             <Grid item xl={3} lg={4} md={6} xs={12} key={id}>
               <Paper elevation={2}>
@@ -64,17 +70,33 @@ export default function ListCats(props) {
                     <Typography variant="button" className={classes.votes}>
                       Votes: {votes}
                     </Typography>
-                    <IconButton>
-                      {favourite ? (
+                    <IconButton
+                      onClick={() => {
+                        if (favouriteId) {
+                          dispatch(unfavourite({ favouriteId }));
+                        } else {
+                          dispatch(favourite({ imageId: id }));
+                        }
+                      }}
+                    >
+                      {favouriteId !== undefined ? (
                         <FavoriteOutlined />
                       ) : (
                         <FavoriteBorderOutlined />
                       )}
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(vote({ imageId: id, value: 1 }));
+                      }}
+                    >
                       <ArrowUpwardOutlined />
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(vote({ imageId: id, value: 0 }));
+                      }}
+                    >
                       <ArrowDownwardOutlined />
                     </IconButton>
                   </Grid>
