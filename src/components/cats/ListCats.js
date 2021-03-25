@@ -1,26 +1,89 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCats } from "../../store/catsSlice";
-import { Paper, Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { getCats, getVotes } from "../../store/catsSlice";
+import {
+  Container,
+  Grid,
+  Paper,
+  IconButton,
+  Typography,
+} from "@material-ui/core";
+import {
+  FavoriteBorderOutlined,
+  FavoriteOutlined,
+  ArrowUpwardOutlined,
+  ArrowDownwardOutlined,
+} from "@material-ui/icons";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    textAlign: "center",
+    overflow: "hidden",
+    backgroundColor: theme.palette.background.paper,
+  },
+  icon: {
+    color: "rgba(255, 255, 255, 0.54)",
+  },
+  img: {
+    height: theme.breakpoints.width > 340 ? "auto" : 240,
+    width: theme.breakpoints.width > 340 ? 340 : "auto",
+  },
+  votes: {
+    width: 250,
+    display: "inline-flex",
+    marginLeft: 16,
+  },
+}));
 
 export default function ListCats(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
-  const cats = useSelector((state) => state.cats);
+  const { cats, loadedCats, loadedVotes } = useSelector(({ cats }) => cats);
 
   useEffect(() => {
-    if (!cats.length) dispatch(getCats());
+    if (!loadedCats) dispatch(getCats());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (loadedCats && !loadedVotes) dispatch(getVotes());
+  }, [loadedCats]);
+
   return (
-    <Grid container spacing={3}>
-      {cats?.map((cat) => {
-        return (
-          <Grid item xs={3} key={cat.id}>
-            <Paper elevation={3}>
-              <img src={cat.url} />
-            </Paper>
-          </Grid>
-        );
-      })}
-    </Grid>
+    <Container maxWidth="xl">
+      <Grid container spacing={3} className={classes.root}>
+        {cats.map(({ id, url, favourite, votes }) => {
+          return (
+            <Grid item xl={3} lg={4} md={6} xs={12} key={id}>
+              <Paper elevation={2}>
+                <Grid container spacing={2} direction="column">
+                  <Grid item xs={12}>
+                    <img src={url} alt={id} className={classes.img} />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="button" className={classes.votes}>
+                      Votes: {votes}
+                    </Typography>
+                    <IconButton>
+                      {favourite ? (
+                        <FavoriteOutlined />
+                      ) : (
+                        <FavoriteBorderOutlined />
+                      )}
+                    </IconButton>
+                    <IconButton>
+                      <ArrowUpwardOutlined />
+                    </IconButton>
+                    <IconButton>
+                      <ArrowDownwardOutlined />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Container>
   );
 }
