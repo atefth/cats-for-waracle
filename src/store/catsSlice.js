@@ -1,3 +1,4 @@
+import { navigate } from "@reach/router";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -221,6 +222,7 @@ const catsSlice = createSlice({
       return { ...state, uploadingCat: true };
     },
     [uploadCat.fulfilled]: (state, action) => {
+      navigate("/");
       return {
         ...state,
         uploadingCat: false,

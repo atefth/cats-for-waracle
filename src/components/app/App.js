@@ -21,7 +21,7 @@ import {
   PetsOutlined,
   AddCircleOutlineOutlined,
 } from "@material-ui/icons";
-import { Router, Link } from "@reach/router";
+import { Router, Link, navigate } from "@reach/router";
 import { ListCats, NewCat } from "../cats/";
 
 const drawerWidth = 240;
@@ -140,7 +140,7 @@ export default function App() {
         </div>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button onClick={() => navigate("/")}>
             <ListItemIcon>
               <PetsOutlined />
             </ListItemIcon>
@@ -149,7 +149,7 @@ export default function App() {
         </List>
         <Divider />
         <List>
-          <ListItem button>
+          <ListItem button onClick={() => navigate("/upload")}>
             <ListItemIcon>
               <AddCircleOutlineOutlined />
             </ListItemIcon>
