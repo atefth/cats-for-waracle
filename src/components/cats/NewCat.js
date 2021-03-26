@@ -3,6 +3,7 @@ import { DropzoneDialog } from "material-ui-dropzone";
 import { Button, Snackbar } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadCat, clearUploadError } from "../../store/catsSlice";
+import { closeDrawer } from "../../store/appSlice";
 import MuiAlert from "@material-ui/lab/Alert";
 
 function Alert(props) {
@@ -30,6 +31,7 @@ export default function NewCat(props) {
         onClose={() => setOpen(false)}
         onSave={(files) => {
           dispatch(uploadCat({ file: files[0] }));
+          dispatch(closeDrawer());
           setOpen(false);
         }}
         showPreviews={true}

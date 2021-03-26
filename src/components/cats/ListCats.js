@@ -9,7 +9,6 @@ import {
   unfavourite,
 } from "../../store/catsSlice";
 import {
-  Container,
   Grid,
   Paper,
   IconButton,

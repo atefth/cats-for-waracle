@@ -23,6 +23,8 @@ import {
 } from "@material-ui/icons";
 import { Router, Link, navigate } from "@reach/router";
 import { ListCats, NewCat } from "../cats/";
+import { useDispatch, useSelector } from "react-redux";
+import { openDrawer, closeDrawer } from "../../store/appSlice";
 
 const drawerWidth = 240;
 
@@ -84,16 +86,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function App() {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const { drawerState } = useSelector(({ app }) => app);
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    dispatch(openDrawer());
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    dispatch(closeDrawer());
   };
 
   return (
@@ -102,7 +105,7 @@ export default function App() {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: drawerState,
         })}
       >
         <Toolbar>
@@ -111,7 +114,7 @@ export default function App() {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton, drawerState && classes.hide)}
           >
             <MenuOutlined />
           </IconButton>
@@ -124,7 +127,7 @@ export default function App() {
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={drawerState}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -159,7 +162,7 @@ export default function App() {
       </Drawer>
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: open,
+          [classes.contentShift]: drawerState,
         })}
       >
         <div className={classes.drawerHeader} />
