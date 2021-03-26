@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { action } from "commander";
 
 const endpoint = "https://api.thecatapi.com/v1";
 const subId = "User-18-08-1991";
@@ -16,9 +15,8 @@ export const getCats = createAsyncThunk("cats/fetchCats", async () => {
     `${endpoint}/images?sub_id=${subId}&limit=${limit}`,
     config
   );
-  const data = await response.data;
 
-  return data;
+  return response.data;
 });
 
 export const getVotes = createAsyncThunk("cats/fetchVotes", async () => {
@@ -26,9 +24,8 @@ export const getVotes = createAsyncThunk("cats/fetchVotes", async () => {
     `${endpoint}/votes?sub_id=${subId}&limit=${limit}`,
     config
   );
-  const data = await response.data;
 
-  return data;
+  return response.data;
 });
 
 export const vote = createAsyncThunk("cats/vote", async (args) => {
@@ -38,9 +35,8 @@ export const vote = createAsyncThunk("cats/vote", async (args) => {
     { image_id: imageId, value, sub_id: subId },
     config
   );
-  const data = await response.data;
 
-  return data;
+  return response.data;
 });
 
 export const favourite = createAsyncThunk("cats/favourite", async (args) => {
@@ -50,9 +46,8 @@ export const favourite = createAsyncThunk("cats/favourite", async (args) => {
     { image_id: imageId, sub_id: subId },
     config
   );
-  const data = await response.data;
 
-  return data;
+  return response.data;
 });
 
 export const unfavourite = createAsyncThunk(
@@ -63,23 +58,26 @@ export const unfavourite = createAsyncThunk(
       `${endpoint}/favourites/${favouriteId}`,
       config
     );
-    const data = await response.data;
 
-    return data;
+    return response.data;
   }
 );
 
 export const uploadCat = createAsyncThunk(
   "cats/createCat",
-  async ({ file }) => {
-    const response = await axios.post(
-      `${endpoint}/images/upload`,
-      { file, sub_id: subId },
-      config
-    );
-    const data = await response.data;
-
-    return data;
+  async ({ file }, { rejectWithValue }) => {
+    const fd = new FormData();
+    fd.append("file", file, file.name);
+    fd.append("sub_id", subId);
+    try {
+      const response = await axios.post(`${endpoint}/images/upload`, fd, {
+        ...config,
+        headers: { ...config.headers, "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -92,7 +90,11 @@ const catsSlice = createSlice({
     loadedVotes: false,
     cats: [],
   },
-  reducers: {},
+  reducers: {
+    clearUploadError(state, action) {
+      return { ...state, uploadError: undefined };
+    },
+  },
   extraReducers: {
     [getCats.pending]: (state, action) => {
       return { ...state, loadingCats: true };
@@ -102,7 +104,7 @@ const catsSlice = createSlice({
         ...state,
         loadingCats: false,
         loadedCats: true,
-        cats: [...state.cats, ...action.payload],
+        cats: [...action.payload],
       };
     },
     [getVotes.pending]: (state, action) => {
@@ -215,12 +217,26 @@ const catsSlice = createSlice({
         }),
       };
     },
+    [uploadCat.pending]: (state, action) => {
+      return { ...state, uploadingCat: true };
+    },
     [uploadCat.fulfilled]: (state, action) => {
-      return { ...state, cats: [...state.cats, action.payload] };
+      return {
+        ...state,
+        uploadingCat: false,
+        cats: [...state.cats, action.payload],
+      };
+    },
+    [uploadCat.rejected]: (state, action) => {
+      return {
+        ...state,
+        uploadingCat: false,
+        uploadError: action.payload.message,
+      };
     },
   },
 });
 
-export const { toggleFavourite } = catsSlice.actions;
+export const { clearUploadError } = catsSlice.actions;
 
 export default catsSlice.reducer;

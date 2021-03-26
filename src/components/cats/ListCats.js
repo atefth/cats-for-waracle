@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     backgroundColor: theme.palette.background.paper,
   },
+  paper: {
+    overflow: "hidden",
+  },
   icon: {
     color: "rgba(255, 255, 255, 0.54)",
   },
@@ -36,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
     width: theme.breakpoints.width > 340 ? 340 : "auto",
   },
   votes: {
-    width: 250,
+    width: 220,
     display: "inline-flex",
-    marginLeft: 16,
+    marginLeft: 14,
   },
 }));
 
@@ -61,7 +64,7 @@ export default function ListCats(props) {
         {cats.map(({ id, url, favouriteId, votes }) => {
           return (
             <Grid item xl={3} lg={4} md={6} xs={12} key={id}>
-              <Paper elevation={2}>
+              <Paper elevation={2} className={classes.paper}>
                 <Grid container spacing={2} direction="column">
                   <Grid item xs={12}>
                     <img src={url} alt={id} className={classes.img} />

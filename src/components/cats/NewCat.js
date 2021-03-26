@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { DropzoneDialog } from "material-ui-dropzone";
-import Button from "@material-ui/core/Button";
+import { Button, Snackbar } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadCat } from "../../store/catsSlice";
+import { uploadCat, clearUploadError } from "../../store/catsSlice";
+import MuiAlert from "@material-ui/lab/Alert";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function NewCat(props) {
   const dispatch = useDispatch();
+  const { uploadError } = useSelector(({ cats }) => cats);
 
   const [open, setOpen] = useState(false);
   return (
@@ -29,6 +35,19 @@ export default function NewCat(props) {
         showPreviews={true}
         showFileNamesInPreview={true}
       />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={uploadError !== undefined}
+      >
+        <Alert
+          onClose={() => {
+            dispatch(clearUploadError());
+          }}
+          severity="error"
+        >
+          {uploadError}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
